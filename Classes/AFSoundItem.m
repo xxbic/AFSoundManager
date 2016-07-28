@@ -30,7 +30,6 @@
         
         _URL = [NSURL fileURLWithPath:itemPath];
         
-        [self fetchMetadata];
     }
     
     return self;
@@ -44,43 +43,9 @@
         
         _URL = URL;
         
-        [self fetchMetadata];
     }
     
     return self;
-}
-
--(void)fetchMetadata {
-    
-    AVPlayerItem *playerItem = [[AVPlayerItem alloc] initWithURL:_URL];
-    
-    NSArray *metadata = [playerItem.asset commonMetadata];
-    
-    for (AVMetadataItem *metadataItem in metadata) {
-        
-        [metadataItem loadValuesAsynchronouslyForKeys:@[AVMetadataKeySpaceCommon] completionHandler:^{
-            
-            if ([metadataItem.commonKey isEqualToString:@"title"]) {
-                
-                _title = (NSString *)metadataItem.value;
-            } else if ([metadataItem.commonKey isEqualToString:@"albumName"]) {
-                
-                _album = (NSString *)metadataItem.value;
-            } else if ([metadataItem.commonKey isEqualToString:@"artist"]) {
-                
-                _artist = (NSString *)metadataItem.value;
-            } else if ([metadataItem.commonKey isEqualToString:@"artwork"]) {
-                
-                if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceID3]) {
-                    
-                    _artwork = [UIImage imageWithData:[[metadataItem.value copyWithZone:nil] objectForKey:@"data"]];
-                } else if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceiTunes]) {
-                    
-                    _artwork = [UIImage imageWithData:[metadataItem.value copyWithZone:nil]];
-                }
-            }
-        }];
-    }
 }
 
 -(void)setInfoFromItem:(AVPlayerItem *)item {
